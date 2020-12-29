@@ -1,15 +1,34 @@
 import * as React from 'react';
-import { StyleSheet } from 'react-native';
-
-import EditScreenInfo from '../components/EditScreenInfo';
-import { Text, View } from '../components/Themed';
+import { View, StyleSheet, Animated, Button } from 'react-native';
+import Constants from 'expo-constants';
+import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
 
 export default function TabOneScreen() {
+  const [state, setState] = React.useState(0);
+  const buttonClick = () => setState(prevKey => prevKey + 1)
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="/screens/TabOneScreen.tsx" />
+      <CountdownCircleTimer
+        key={state}
+        isPlaying
+        duration={10}
+        colors={[["#004777", 0.33], ["#F7B801", 0.33], ["#A30000", 0.33]]}
+        onComplete={() => [true, 1000]}
+      >
+        {({ remainingTime, animatedColor }) => (
+          <Animated.Text
+            style={{ ...styles.remainingTime, color: animatedColor }}>
+            {remainingTime}
+          </Animated.Text>
+        )}
+      </CountdownCircleTimer>
+      <Button
+        onPress={buttonClick}
+        title="リセットボタン"
+        color="blue"
+        accessibilityLabel="リセットボタン"
+        />
     </View>
   );
 }
@@ -17,16 +36,14 @@ export default function TabOneScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: Constants.statusBarHeight,
+    backgroundColor: '#ecf0f1',
+    padding: 8,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+  remainingTime: {
+    fontSize: 46,
   },
 });
+
